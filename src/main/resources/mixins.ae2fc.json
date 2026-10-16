@@ -28,7 +28,6 @@
   "client": [
     "ae2.gui.MixinAEBaseGui",
     "ae2.gui.MixinGuiCellWorkbench",
-    "ae2.gui.MixinGuiCraftAmount",
     "ae2.gui.MixinGuiCrafting",
     "ae2.gui.MixinGuiCraftingStatus",
     "ae2.gui.MixinGuiMEMonitorable"
