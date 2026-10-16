@@ -1,4 +1,4 @@
-package com.glodblock.github.coremod.mixin.ae2;
+package com.glodblock.github.coremod.mixin.ae2.old;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -65,6 +65,7 @@ public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implem
         monitor = security.getGrid().<IStorageGrid>getCache(IStorageGrid.class).getInventory(Util.getItemChannel());
     }
 
+    // In 0.56.5, auto-crafting inventories are part of the sticky pass. Convert fluids only after that pass.
     @Inject(method = "injectItems", at = @At(value = "INVOKE", target = "Ljava/util/NavigableMap;values()Ljava/util/Collection;", ordinal = 1), cancellable = true)
     private void notItemInject(final T input, final Actionable type, IActionSource src, final CallbackInfoReturnable<T> cir) {
         if (input == null || input instanceof IAEItemStack) return;
@@ -97,6 +98,7 @@ public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implem
         this.surface(null, type);
     }
 
+    // The crafting grid is handled in priority pass 1; convert fake fluids only in pass 2.
     @Inject(method = "injectItems", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 2), cancellable = true)
     private void injectItems(final T input, final Actionable type, final IActionSource src, final CallbackInfoReturnable<T> cir, @Share("fc$fakeInput") final LocalBooleanRef fakeInput) {
         if (input == null || fakeInput.get()) return;

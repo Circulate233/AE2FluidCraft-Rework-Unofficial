@@ -39,7 +39,8 @@ dependencies {
     compileOnly(rfg.deobf('curse.maven:packagedauto-308380:2977147')) // 1.0.3.14
     compileOnly(rfg.deobf('curse.maven:codechicken-lib-1-8-242818:2779848')) //ccl
     compileOnly(rfg.deobf('curse.maven:gregtech-ce-unofficial-557242:5121638')) // gt
-    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:6302098"))
+    //implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:6302098")) // 0.56.7
+    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:5378163")) // 0.56.5
     compileOnly(rfg.deobf('curse.maven:dynamistics-383632:3056455')) // dy
     implementation(rfg.deobf('curse.maven:baubles-227083:2518667')) //baubles
     compileOnly(rfg.deobf("curse.maven:thaumic-223628:2629023"))

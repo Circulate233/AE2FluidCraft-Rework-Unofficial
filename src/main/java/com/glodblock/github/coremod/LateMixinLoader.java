@@ -3,6 +3,7 @@ package com.glodblock.github.coremod;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 import zone.rong.mixinbooter.ILateMixinLoader;
 
 import javax.annotation.Nonnull;
@@ -17,6 +18,8 @@ public class LateMixinLoader implements ILateMixinLoader {
 
     static {
         addMixinCFG("mixins.ae2fc.json");
+        addMixinCFG("mixins.ae2fc.ae2.old.json", () -> !isNewAE2());
+        addMixinCFG("mixins.ae2fc.ae2.new.json", LateMixinLoader::isNewAE2);
         addMixinCFG("mixins.ae2fc.packagedauto.json", () -> Loader.isModLoaded("packagedauto"));
         addMixinCFG("mixins.ae2fc.jei.json", () -> Loader.isModLoaded("jei"));
         addMixinCFG("mixins.ae2fc.wct.json", () -> Loader.isModLoaded("wct"));
@@ -42,6 +45,13 @@ public class LateMixinLoader implements ILateMixinLoader {
     @Override
     public boolean shouldMixinConfigQueue(final String mixinConfig) {
         return MIXIN_CONFIGS.get(mixinConfig).getAsBoolean();
+    }
+
+    private static boolean isNewAE2() {
+        final String version = Loader.instance().getIndexedModList().get("appliedenergistics2").getVersion();
+        final String normalizedVersion = version.replaceFirst("^[vV]", "");
+        // 0.56.7 added crafting inventories before the sticky and regular inventory passes.
+        return new DefaultArtifactVersion(normalizedVersion).compareTo(new DefaultArtifactVersion("0.56.7")) >= 0;
     }
 
     private static boolean isClassPresent(final String className) {

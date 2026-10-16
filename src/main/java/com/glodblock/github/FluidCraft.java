@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = FluidCraft.MODID, version = FluidCraft.VERSION, useMetadata = true,
-    dependencies = "required-after:appliedenergistics2@[v0.56.7,);" +
+    dependencies = "required-after:appliedenergistics2@[v0.56.5,);" +
         "required-after:mixinbooter@[8.0,);"
 )
 public class FluidCraft {
