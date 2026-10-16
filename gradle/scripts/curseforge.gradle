@@ -39,7 +39,6 @@ tasks.register('publishCurseForge', net.darkhax.curseforgegradle.TaskPublishCurs
     artifact.addJavaVersion('Java 8')
     artifact.addJavaVersion('Java 25')
     artifact.addRequirement(*curseforgeRequiredDependencies)
-    artifact.addOptional(*curseforgeOptionalDependencies)
     artifact.addIncompatibility(*curseforgeIncompatibleDependencies)
 }
 
