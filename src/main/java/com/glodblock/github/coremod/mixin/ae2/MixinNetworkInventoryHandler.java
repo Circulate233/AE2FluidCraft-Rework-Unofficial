@@ -34,7 +34,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.NavigableMap;
 
-@SuppressWarnings({"DataFlowIssue", "unchecked"})
+@SuppressWarnings({"DataFlowIssue", "unchecked", "AddedMixinMembersNamePattern"})
 @Mixin(value = NetworkInventoryHandler.class, remap = false, priority = 1001)
 public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implements FCNetworkInventoryHandler {
 
@@ -66,26 +66,26 @@ public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implem
     }
 
     @Inject(method = "injectItems", at = @At(value = "INVOKE", target = "Ljava/util/NavigableMap;values()Ljava/util/Collection;", ordinal = 1), cancellable = true)
-    private void notItemInject(final T input, final Actionable mode, IActionSource src, final CallbackInfoReturnable<T> cir) {
+    private void notItemInject(final T input, final Actionable type, IActionSource src, final CallbackInfoReturnable<T> cir) {
         if (input == null || input instanceof IAEItemStack) return;
-        if (mode == Actionable.SIMULATE || src instanceof FakeMonitor.FakeMonitorSource) return;
+        if (type == Actionable.SIMULATE || src instanceof FakeMonitor.FakeMonitorSource) return;
         final var drop = Util.packAEStackToDrop(input);
         if (drop != null) {
-            if (!this.getDepth(mode).isEmpty()) this.surface(null, mode);
-            cir.setReturnValue(FakeItemRegister.getAEStack(monitor.injectItems(drop, mode, src)));
-            this.diveList((NetworkInventoryHandler<T>) (Object) this, mode);
+            if (!this.getDepth(type).isEmpty()) this.surface(null, type);
+            cir.setReturnValue(FakeItemRegister.getAEStack(monitor.injectItems(drop, type, src)));
+            this.diveList((NetworkInventoryHandler<T>) (Object) this, type);
         } else return;
-        this.surface(null, mode);
+        this.surface(null, type);
     }
 
     @Inject(method = "injectItems", at = @At(value = "FIELD", target = "Lappeng/me/storage/NetworkInventoryHandler;priorityInventory:Ljava/util/NavigableMap;", opcode = Opcodes.GETFIELD), cancellable = true)
-    private void injectItemsN(final T input, final Actionable mode, final IActionSource src, final CallbackInfoReturnable<T> cir, @Share("fc$fakeInput") final LocalBooleanRef fakeInput) {
+    private void injectItemsN(final T input, final Actionable type, final IActionSource src, final CallbackInfoReturnable<T> cir, @Share("fc$fakeInput") final LocalBooleanRef fakeInput) {
         if (input == null || fakeInput.get() || !this.priorityInventory.isEmpty()) return;
         if (input instanceof final IAEItemStack i) {
             if (FakeFluids.isFluidFakeItem(i.getDefinition())) {
-                cir.setReturnValue((T) fluidMonitor.injectItems(i, mode, src));
+                cir.setReturnValue((T) fluidMonitor.injectItems(i, type, src));
             } else if (ModAndClassUtil.GAS && FakeGases.isGasFakeItem(i.getDefinition())) {
-                cir.setReturnValue((T) gasMonitor.injectItems(i, mode, src));
+                cir.setReturnValue((T) gasMonitor.injectItems(i, type, src));
             } else {
                 fakeInput.set(true);
                 return;
@@ -94,17 +94,17 @@ public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implem
             fakeInput.set(true);
             return;
         }
-        this.surface(null, mode);
+        this.surface(null, type);
     }
 
     @Inject(method = "injectItems", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 2), cancellable = true)
-    private void injectItems(final T input, final Actionable mode, final IActionSource src, final CallbackInfoReturnable<T> cir, @Share("fc$fakeInput") final LocalBooleanRef fakeInput) {
+    private void injectItems(final T input, final Actionable type, final IActionSource src, final CallbackInfoReturnable<T> cir, @Share("fc$fakeInput") final LocalBooleanRef fakeInput) {
         if (input == null || fakeInput.get()) return;
         if (input instanceof final IAEItemStack i) {
             if (FakeFluids.isFluidFakeItem(i.getDefinition())) {
-                cir.setReturnValue((T) fluidMonitor.injectItems(i, mode, src));
+                cir.setReturnValue((T) fluidMonitor.injectItems(i, type, src));
             } else if (ModAndClassUtil.GAS && FakeGases.isGasFakeItem(i.getDefinition())) {
-                cir.setReturnValue((T) gasMonitor.injectItems(i, mode, src));
+                cir.setReturnValue((T) gasMonitor.injectItems(i, type, src));
             } else {
                 fakeInput.set(true);
                 return;
@@ -113,7 +113,7 @@ public abstract class MixinNetworkInventoryHandler<T extends IAEStack<T>> implem
             fakeInput.set(true);
             return;
         }
-        this.surface(null, mode);
+        this.surface(null, type);
     }
 
     @Inject(method = "extractItems", at = @At(value = "FIELD", target = "Lappeng/me/storage/NetworkInventoryHandler;priorityInventory:Ljava/util/NavigableMap;", opcode = Opcodes.GETFIELD), cancellable = true)
