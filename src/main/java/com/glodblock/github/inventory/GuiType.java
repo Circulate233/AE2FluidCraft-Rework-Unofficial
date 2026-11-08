@@ -352,6 +352,10 @@ public enum GuiType {
 
         protected final Class<T> invClass;
 
+        private static boolean isItemHostPosition(final BlockPos pos) {
+            return pos.getZ() == Integer.MIN_VALUE;
+        }
+
         public TileGuiFactory(final Class<T> invClass) {
             this.invClass = invClass;
         }
@@ -364,8 +368,9 @@ public enum GuiType {
         @Nullable
         @Override
         public Object createServerGui(final EntityPlayer player, final World world, final int x, final int y, final int z, final EnumFacing face) {
-            final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-            final T inv = getInventory(tile, player, face, new BlockPos(x, y, z));
+            final BlockPos pos = new BlockPos(x, y, z);
+            final TileEntity tile = isItemHostPosition(pos) ? null : world.getTileEntity(pos);
+            final T inv = getInventory(tile, player, face, pos);
             if (inv == null) {
                 return null;
             }
@@ -388,8 +393,9 @@ public enum GuiType {
         @Nullable
         @Override
         public Object createClientGui(final EntityPlayer player, final World world, final int x, final int y, final int z, final EnumFacing face) {
-            final TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-            final T inv = getInventory(tile, player, face, new BlockPos(x, y, z));
+            final BlockPos pos = new BlockPos(x, y, z);
+            final TileEntity tile = isItemHostPosition(pos) ? null : world.getTileEntity(pos);
+            final T inv = getInventory(tile, player, face, pos);
             if (inv == null) {
                 return null;
             }
